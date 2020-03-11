@@ -22,11 +22,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        reference.child("usuarios2").child("001").child("nome").setValue("Emanoel");
+        reference.child("usuarios2").child("001").child("nome").setValue("Webertty");
 
        //utilizando objetos
        DatabaseReference usuarios = reference.child("usuarios");
-       
+
+       /**
+        * Adicionando listener para qualquer alteração no objeto usuarios, emitir um Log de info
+        **/
        usuarios.addValueEventListener(new ValueEventListener() {
            @Override
            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
