@@ -22,37 +22,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        reference.child("usuarios2").child("001").child("nome").setValue("Webertty");
-
-       //utilizando objetos
-       DatabaseReference usuarios = reference.child("usuarios");
-
-       /**
-        * Adicionando listener para qualquer alteração no objeto usuarios, emitir um Log de info
-        **/
-       usuarios.addValueEventListener(new ValueEventListener() {
-           @Override
-           public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-               Log.i("FIREBASE", dataSnapshot.getValue().toString());
-           }
-
-           @Override
-           public void onCancelled(@NonNull DatabaseError databaseError) {
-
-           }
-       });
-
+        //utilizando objetos
+        DatabaseReference usuarios = reference.child("usuarios");
 
 //      Salvando em banco de dados
-       /*Usuarios usuario = new Usuarios();
+       Usuarios usuario = new Usuarios();
 
-       usuario.setNome("Marilia");
+       usuario.setNome("Weberty");
        usuario.setSobrenome("Mendonca");
-       usuario.setIdade(28);
+       usuario.setIdade(25);
 
+/*//      Forma manual
+       usuarios.child("002").setValue(usuario);*/
 
-       usuarios.child("002").setValue(usuario);
-
+//     Definindo de forma dinamica
+        usuarios.push().setValue(usuario);
 
        DatabaseReference produtos = reference.child("produtos");
        Produtos produto = new Produtos();
@@ -60,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
        produto.setMarca("Samsung");
        produto.setPreco(2000.89);
 
-       produtos.child("002").setValue(produto);*/
+//       Definindo de forma dinamica
+       produtos.push().setValue(produto);
     }
 }
