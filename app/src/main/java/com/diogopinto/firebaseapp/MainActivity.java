@@ -10,6 +10,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
@@ -27,15 +28,24 @@ public class MainActivity extends AppCompatActivity {
 
 //        Pesquisas
 //        Selecionar o usuário pelo seu identifcador unico
-        DatabaseReference usuarioPesquisa = usuarios.child("-M3WKPDDnV0n_X96hQ54");
+//        DatabaseReference usuarioPesquisa = usuarios.child("-M3WKPDDnV0n_X96hQ54");
+
+//        Ordena os dados para depois aplicar o filtro
+//        Query usuarioPesquisa = usuarios.orderByChild("nome").equalTo("Diogo");
+
+//        Limita a pesquisa para os dois primeiros usuários
+//        Query usuarioPesquisa = usuarios.orderByKey().limitToFirst(2);
+
+//        Limita a pesquisa para os dois ultimos usuários
+        Query usuarioPesquisa = usuarios.orderByKey().limitToLast(2);
 
         usuarioPesquisa.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try{
-                    Usuarios dadosUsuario = dataSnapshot.getValue(Usuarios.class);
-                    Log.i("usuario", "nome: "+dadosUsuario.getNome());
-//                    Log.i("Dados usuario", dataSnapshot.getValue().toString());
+                    /*Usuarios dadosUsuario = dataSnapshot.getValue(Usuarios.class);
+                    Log.i("usuario", "nome: "+dadosUsuario.getNome());*/
+                    Log.i("usuario", dataSnapshot.getValue().toString());
                 }catch(NullPointerException e){
                     Log.i("usuario", "Usuário não Localizado!");
                 }
