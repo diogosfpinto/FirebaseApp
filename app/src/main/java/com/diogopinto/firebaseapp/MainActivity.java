@@ -37,7 +37,21 @@ public class MainActivity extends AppCompatActivity {
 //        Query usuarioPesquisa = usuarios.orderByKey().limitToFirst(2);
 
 //        Limita a pesquisa para os dois ultimos usuários
-        Query usuarioPesquisa = usuarios.orderByKey().limitToLast(2);
+//        Query usuarioPesquisa = usuarios.orderByKey().limitToLast(2);
+
+//        Maior ou igual (>=)
+//        Query usuarioPesquisa = usuarios.orderByChild("idade").startAt(35);
+
+//        Menor ou igual (<=)
+//        Query usuarioPesquisa = usuarios.orderByChild("idade").endAt(35);
+
+//        Entre valores
+//        Query usuarioPesquisa = usuarios.orderByChild("idade").startAt(30).endAt(40);
+
+//        Filtrar palavras
+        /*uf8ff é por causa do formato unicode*/
+        Query usuarioPesquisa = usuarios.orderByChild("nome")
+                                        .startAt("M").endAt("M" + "\uf8ff");
 
         usuarioPesquisa.addValueEventListener(new ValueEventListener() {
             @Override
