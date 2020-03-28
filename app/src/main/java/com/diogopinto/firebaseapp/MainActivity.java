@@ -25,26 +25,48 @@ public class MainActivity extends AppCompatActivity {
         //utilizando objetos
         DatabaseReference usuarios = reference.child("usuarios");
 
+//        Pesquisas
+//        Selecionar o usuário pelo seu identifcador unico
+        DatabaseReference usuarioPesquisa = usuarios.child("-M3WKPDDnV0n_X96hQ54");
+
+        usuarioPesquisa.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                try{
+                    Usuarios dadosUsuario = dataSnapshot.getValue(Usuarios.class);
+                    Log.i("usuario", "nome: "+dadosUsuario.getNome());
+//                    Log.i("Dados usuario", dataSnapshot.getValue().toString());
+                }catch(NullPointerException e){
+                    Log.i("usuario", "Usuário não Localizado!");
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        })
+
+
 //      Salvando em banco de dados
-       Usuarios usuario = new Usuarios();
+       /*Usuarios usuario = new Usuarios();
 
-       usuario.setNome("Weberty");
-       usuario.setSobrenome("Mendonca");
-       usuario.setIdade(25);
-
-/*//      Forma manual
-       usuarios.child("002").setValue(usuario);*/
+       usuario.setNome("Rodrigo");
+       usuario.setSobrenome("Matos");
+       usuario.setIdade(35);
 
 //     Definindo de forma dinamica
-        usuarios.push().setValue(usuario);
+        usuarios.push().setValue(usuario);*/
 
-       DatabaseReference produtos = reference.child("produtos");
+        /*//      Forma manual
+       usuarios.child("002").setValue(usuario);*/
+
+       /*DatabaseReference produtos = reference.child("produtos");
        Produtos produto = new Produtos();
        produto.setDescricao("Notebook");
        produto.setMarca("Samsung");
-       produto.setPreco(2000.89);
+       produto.setPreco(2000.89);*//*
 
 //       Definindo de forma dinamica
-       produtos.push().setValue(produto);
+       produtos.push().setValue(produto)*/;
     }
 }
