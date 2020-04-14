@@ -3,28 +3,92 @@ package com.diogopinto.firebaseapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.ByteArrayOutputStream;
+import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
     //Referencia para o banco será a raiz do BD:
-    private DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+//    private DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+
+    private Button botaoUpload;
+    private ImageView imageFoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        botaoUpload = findViewById(R.id.buttonUpload);
+        imageFoto = findViewById(R.id.imageFoto);
+
+        botaoUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                Configura para imagem ser salva na memória
+                imageFoto.setDrawingCacheEnabled(true);
+                imageFoto.buildDrawingCache();
+//                Recupera bitmap da imagem (imagem a ser carregada)
+                Bitmap bitmap = imageFoto.getDrawingCache();
+
+//                Comprimo bitmap para formato png/jpeg
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 75, baos);
+
+//                converte o baos para pixel brutos em uma matriz de bytes
+//                (dados da imagem)
+                byte[] dadosImagem = baos.toByteArray();
+
+                //Define nós para o storage
+                StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+                StorageReference imagens = storageReference.child("imagens");
+
+//                Nome da image
+                String nomeArquivo = UUID.randomUUID().toString();
+                StorageReference imagemRef = imagens.child(nomeArquivo+".jpeg");
+
+//                Retorna objeto que irá controlar o upload
+                UploadTask uploadTask = imagemRef.putBytes(dadosImagem);
+                uploadTask.addOnFailureListener(MainActivity.this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(MainActivity.this, "Upload da imagem da falhou: "+e.getMessage().toString()
+                                , Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnSuccessListener(MainActivity.this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Uri url = taskSnapshot.getUploadSessionUri();
+                        Toast.makeText(MainActivity.this, "Sucesso ao fazer upload: "+url.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+        });
+
         //utilizando objetos
-        DatabaseReference usuarios = reference.child("usuarios");
+//        DatabaseReference usuarios = reference.child("usuarios");
 
 //        Pesquisas
 //        Selecionar o usuário pelo seu identifcador unico
@@ -50,15 +114,15 @@ public class MainActivity extends AppCompatActivity {
 
 //        Filtrar palavras
         /*uf8ff é por causa do formato unicode*/
-        Query usuarioPesquisa = usuarios.orderByChild("nome")
+        /*Query usuarioPesquisa = usuarios.orderByChild("nome")
                                         .startAt("M").endAt("M" + "\uf8ff");
 
         usuarioPesquisa.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try{
-                    /*Usuarios dadosUsuario = dataSnapshot.getValue(Usuarios.class);
-                    Log.i("usuario", "nome: "+dadosUsuario.getNome());*/
+                    *//*Usuarios dadosUsuario = dataSnapshot.getValue(Usuarios.class);
+                    Log.i("usuario", "nome: "+dadosUsuario.getNome());*//*
                     Log.i("usuario", dataSnapshot.getValue().toString());
                 }catch(NullPointerException e){
                     Log.i("usuario", "Usuário não Localizado!");
@@ -68,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        })
+        })*/
 
 
 //      Salvando em banco de dados
